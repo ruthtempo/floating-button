@@ -53,8 +53,12 @@ const handleScroll = (e: any) => {
 };
 ```
 
+![visual diagram](diagram1.png)
+
 The problem with saving the id in a let variable, though, arises in situations such as actions that trigger **rerenders**
 If this were the case, this would mean that the timeout would not be cleared because its reference would have been lost(since the variable _timeoutId_ is redeclared)
+
+![visual diagram](diagram3.png)
 
 The solution to that is to use the hook useRef() that "allows you to persist values between renders", "and it can be used to store a mutable value that does not cause a re-render when updated" (source: w3schools)
 
@@ -77,3 +81,9 @@ Now we can pass with props the current state of the scroll event to our child co
     } `}
 >
 ```
+
+4. Adding a style transition to the floating button
+
+Additionally, for a nicer and smoother visual experience, you can add a subtle transition to the button so that it changes depending on the scrolling state
+
+![visual diagram](diagram2.png)
