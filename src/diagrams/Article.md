@@ -1,18 +1,18 @@
 1.  How to build a scrollable page
 
-    A floating button is a button that has a fixed position on the screen, no matter how much the scrolling.
-    This makes it easier for the user to access and use it. These kind of buttons are intended for very frequent or relevant actions within an app.
+A floating button is a button that has a fixed position on the screen, no matter how much the scrolling.
+This makes it easier for the user to access and use it. These kind of buttons are intended for very frequent or relevant actions within an app.
 
-    For that implementation I used React/Typescript, and for styling I used bootstrap 5.
+For that implementation I used React/Typescript, and for styling I used bootstrap 5.
 
-    First of all, we need to create our empty scrollable page. The parent component gets a smaller height than the child component so that it overflows.
+First of all, we need to create our empty scrollable page. The parent component gets a smaller height than the child component so that it overflows.
 
-    For example, we set **App** (parent) with a `style={{ height: "100vh" }}`and **FloatingButtons** (child) gets a bigger height `style={{ height: 5000 }}`. In order to achieve the scrolling functionality we still need to add to **App** the class `overflow-auto`:
+For example, we set **App** (parent) with a `style={{ height: "100vh" }}`and **FloatingButtons** (child) gets a bigger height `style={{ height: 5000 }}`. In order to achieve the scrolling functionality we still need to add to **App** the class `overflow-auto`:
 
 2.  Create the floating button
 
-    The key to a floting button, that is always in the same position at the page, is to make its position fixed `position-fixed`
-    Then, it only rmeinas to decide where in your application it is going to be positioned.
+The key to a floting button, that is always in the same position at the page, is to make its position fixed `position-fixed`
+Then, it only rmeinas to decide where in your application it is going to be positioned.
 
 3.  How to collapse button on scroll
 
