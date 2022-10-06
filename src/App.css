@@ -1,5 +1,14 @@
 
+.buttonTrans{
+    width: 60px;
+    transition: width 0.2s ease-in;
+    display: inline-block;
+    overflow: hidden;
+}
 
+.transition{
+    width: 0px;     
+}
 
 
 

@@ -1,12 +1,16 @@
-import React from "react";
-import "./App.css";
+import React, { useRef, useState } from "react";
 import { FloatingButtons } from "./FloatingButtons";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Col, Container, Row } from "react-bootstrap";
 
 function App() {
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+  const timeoutId = useRef<NodeJS.Timeout>();
+
   const handleScroll = (e: any) => {
-    console.log("hola");
+    setIsScrolling(true);
+    clearTimeout(timeoutId.current);
+    timeoutId.current = setTimeout(() => setIsScrolling(false), 500);
   };
 
   return (
@@ -17,7 +21,7 @@ function App() {
     >
       <Row>
         <Col md={{ span: 8, offset: 2 }}>
-          <FloatingButtons />
+          <FloatingButtons isScrolling={isScrolling} />
         </Col>
       </Row>
     </Container>
