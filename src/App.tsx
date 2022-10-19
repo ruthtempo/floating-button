@@ -1,30 +1,31 @@
 import React, { useRef, useState } from "react";
-import { FloatingButtons } from "./FloatingButtons";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Col, Container, Row } from "react-bootstrap";
+import "./App.css";
+
+const placeholders = new Array(99).fill(0).map((_, i) =>
+  <p key={i} style={{ width: `${Math.random() * 75}%` }} />
+)
 
 function App() {
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   const timeoutId = useRef<NodeJS.Timeout>();
 
-  const handleScroll = (e: any) => {
+  const handleScroll: React.UIEventHandler<HTMLDivElement> = (_) => {
     setIsScrolling(true);
     clearTimeout(timeoutId.current);
     timeoutId.current = setTimeout(() => setIsScrolling(false), 500);
   };
 
   return (
-    <Container
-      className="App text-center overflow-auto"
-      style={{ height: "100vh", backgroundColor: "lightgray" }}
-      onScroll={handleScroll}
-    >
-      <Row>
-        <Col md={{ span: 8, offset: 2 }}>
-          <FloatingButtons isScrolling={isScrolling} />
-        </Col>
-      </Row>
-    </Container>
+    <div onScroll={handleScroll}>
+      <h1>Collapsible Floating Action Button</h1>
+      {placeholders}
+      <button className={isScrolling ? "isScrolling" : ""}>
+        <strong>A</strong>
+        <span>
+          ction
+        </span>
+      </button>
+    </div>
   );
 }
 

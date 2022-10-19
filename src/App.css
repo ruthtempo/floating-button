@@ -1,14 +1,37 @@
+button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    transition: border-radius 0.2s ease-in;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    min-width: 30px;
+    height: 30px;
+    text-align: left;
+}
 
-.buttonTrans{
-    width: 60px;
+button.isScrolling {
+    border-radius: 50%;
+}
+
+button span {
+    width: 40px;
     transition: width 0.2s ease-in;
-    display: inline-block;
     overflow: hidden;
 }
 
-.transition{
-    width: 0px;     
+button.isScrolling span {
+    width: 0px;
 }
 
+p {
+    height: 30px;
+    background-color: silver;
+}
 
-
+div {
+    height: 100vh;
+    overflow: scroll;
+}

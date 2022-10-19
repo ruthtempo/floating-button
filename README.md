@@ -1,46 +1,193 @@
-# Getting Started with Create React App
+#  Animated Floating Action Button with React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Demonstration of a collapsible action button](assets/demo.gif);
 
-## Available Scripts
+## What an floating action button is
 
-In the project directory, you can run:
+<!--
+  (Your description is very good, but it also would be nice to have a reference that shows that you didn't just make the term up. It gives you more credibility)
+  In Material Design it is defined as:
+  "A floating action button (FAB) represents the primary action of a screen."
+  https://material.io/components/buttons-floating-action-button
+-->
+A floating action button is a button that has a fixed position on the screen, no matter how much the scrolling.
+This makes it easier for the user to access and use it. These kind of buttons are intended for very frequent or relevant actions within an app.
 
-### `npm start`
+A collapsible action button as the name suggests shrinks to a minimal size while the user is scrolling the page. Pictures speak a thousand words so here is a gif:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+<!-- todo: capture interaction with demo app -->
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 1. Create a scrollable container
 
-### `npm test`
+First of all, we need to create a scrollable page with some placeholder content.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+``` tsx
+const placeholders = new Array(99).fill(0).map((_, i) =>
+  <p key={i} style={{ width: `${Math.random() * 75}%` }} />
+);
 
-### `npm run build`
+function App() {
+  return (
+    <div>
+      <h1>Collapsible Floating Action Button</h1>
+      {placeholders}
+      <button>Action</button>
+      <b>
+    </div>
+  );
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+For this we render an array of 99 empty paragraphs with a constant height and assign a random width to each paragraph:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+``` css
+p {
+    height: 30px;
+    background-color: silver;
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+In a real project we would utilize a specific class name (e.g. `.placeholder`) rather than selecting a paragraph by the corresponding tag name `p` but for this tutorial we just do it the lazy way and avoid any additional attributes in our jsx code.
 
-### `npm run eject`
+``` css
+div {
+    height: 100vh;
+    overflow: scroll;
+}
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+The `div` element we created in our `App` component serves as the container for the scrollable content. We want to make sure that only the content is scrollable and not the container itself. This is done by setting the `height` attribute to the height of the viewport and the `overflow` attribute to `scroll`. You will see later, that this is crucial for intercepting scroll events effectively.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 2.  Create the floating action button
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The key to this floating button, that is always in the same position at the page, is to make its position fixed `positionL: fixed;` Then, it only remains to decide where in your application it is going to be positioned (in our case at the bottom right).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+``` css
+button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+```
 
-## Learn More
+## 3.  How to collapse button on scroll
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Onscroll is an mouse event that happens every time the page is scrolled.
+To handle that event, we have to write a function that sets the state we wish for, in this specific case is collapsing the floating button while scrolling is happening, and returning to its original shape when the event stops.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+It is important to identify in which component is the event happening. In this case, the scrolling happens in the `div` container (remember how we limit the `height` property and set `overflow: scroll` to make it scrollable?).
+
+In my event handler we want to be able to identify and catch both the **scrolling** and the **lack of scrolling** and set our state accordingly.
+This way, while the event is taking place, we set `isScrolling` to `true`.
+
+```ts
+function App() {
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
+
+  const handleScroll: React.UIEventHandler<HTMLDivElement> = (_) => {
+    setIsScrolling(true);
+  };
+
+  return (
+    <div onScroll={handleScroll}>
+      <h1>Collapsible Floating Action Button</h1>
+      ...
+    </div>
+  );
+}
+```
+
+Now we also need to set the state to `false` once the event is no longer happening. Unfortunately there is no event that notifies about the completion of a scrolling event. But there exists a juicy workaround that is based on setting a timeout with `setTimeout()`:
+
+``` ts
+const handleScroll: React.UIEventHandler<HTMLDivElement> = (_) => {
+  setIsScrolling(true);
+  setTimeout(() => setIsScrolling(false), 500);
+};
+```
+
+But the tricky part comes here. For every time we scroll, there is a new scroll event firing (and there will be a lot of these). That means that we would be setting multiple timeouts every time we scroll.
+
+Therefore, we need to use `clearTimeout()` to reset the previous timeout if a new `scroll` event is fired in under our specific time (`500 ms`). This way we make sure we clear the previous timeout and a new one is starting on very scroll.
+
+Another thing to take into account is that `setTimeout()` returns a `timeoutId`. Thats what we are going to take as a reference when calling `clearTimeout()`.
+
+```ts
+let timeoutId;
+const handleScroll = (e: any) => {
+  setIsScrolling(true);
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => setIsScrolling(false), 500);
+};
+```
+
+![visual diagram](assets/diagram1.png)
+
+Experience react developers probably notice the error in the previous code fragment. The problem with saving the `timeoutId` in a variable, though, arises in situations such as actions that trigger **rerenders**.
+If this were the case, this would mean that the timeout would not be cleared because its reference would have been lost (since the variable `timeoutId` is redeclared on each rerender)
+
+![visual diagram](assets/diagram3.png)
+
+The solution to that is to use the hook useRef() that "allows you to persist values between renders", "and it can be used to store a mutable value that does not cause a re-render when updated" (source: w3schools) <!-- todo: add link -->
+
+```ts
+const timeoutId = useRef<NodeJS.Timeout>();
+
+const handleScroll = (e: any) => {
+  setIsScrolling(true);
+  clearTimeout(timeoutId.current);
+  timeoutId.current = setTimeout(() => setIsScrolling(false), 500);
+};
+```
+
+## 4. Adding a style transition to the floating button
+
+Now, for a nice and smooth visual experience, you can add a subtle transition to the button so that it changes depending on the scrolling state.
+
+```tsx
+function App() {
+  ...
+  return (
+    <div onScroll={handleScroll}>
+      ...
+      <button className={isScrolling ? "isScrolling" : ""}>
+        <strong>A</strong><span>ction</span>
+      </button>
+    </div>
+  );
+}
+```
+
+``` css
+button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  transition: border-radius 0.2s ease-in;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  min-width: 30px;
+  height: 30px;
+  text-align: left;
+}
+
+button.isScrolling {
+  border-radius: 50%;
+}
+
+button span {
+  width: 40px;
+  transition: width 0.2s ease-in;
+  overflow: hidden;
+}
+
+button.isScrolling span {
+  width: 0px;
+}
+```
+
+
+
+![visual diagram](assets/diagram2.png)
