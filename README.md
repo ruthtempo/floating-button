@@ -8,7 +8,7 @@ It usually has a fixed position on the screen, no matter how much the scrolling;
 A collapsible action button as the name suggests shrinks to a minimal size while the user is scrolling the page. Pictures speak a thousand words so here is a gif:
 
 
-![Demo floating button]()
+![Demo floating button](assets/demo.gif)
 
 ## 1. Create a scrollable container
 
