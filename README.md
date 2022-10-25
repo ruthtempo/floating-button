@@ -184,7 +184,7 @@ button.isScrolling span {
 }
 ```
 
-![Floating button transition](assets/diagram2.png)
+![Floating button transition](assets/diagram2val.png)
 
 
 **Additional note:** _This article was co-authored by Denis Kruschinski_
