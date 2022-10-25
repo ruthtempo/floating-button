@@ -1,21 +1,14 @@
-#  Animated Floating Action Button with React
 
-![Demonstration of a collapsible action button](assets/demo.gif);
+## What is a Floating Action Button 
 
-## What an floating action button is
-
-<!--
-  (Your description is very good, but it also would be nice to have a reference that shows that you didn't just make the term up. It gives you more credibility)
-  In Material Design it is defined as:
-  "A floating action button (FAB) represents the primary action of a screen."
-  https://material.io/components/buttons-floating-action-button
--->
-A floating action button is a button that has a fixed position on the screen, no matter how much the scrolling.
-This makes it easier for the user to access and use it. These kind of buttons are intended for very frequent or relevant actions within an app.
+  "A [floating action button (FAB) ](https://material.io/components/buttons-floating-action-button)represents the primary action(s) of a screen."
+  
+It usually has a fixed position on the screen, no matter how much the scrolling; this makes it easier for the user to access and use it. These kind of buttons are intended for very frequent or relevant actions within an app.
 
 A collapsible action button as the name suggests shrinks to a minimal size while the user is scrolling the page. Pictures speak a thousand words so here is a gif:
 
-<!-- todo: capture interaction with demo app -->
+
+![Demo floating button]()
 
 ## 1. Create a scrollable container
 
@@ -70,7 +63,7 @@ button {
 }
 ```
 
-## 3.  How to collapse button on scroll
+## 3.  How to collapse the button on scroll
 
 Onscroll is an mouse event that happens every time the page is scrolled.
 To handle that event, we have to write a function that sets the state we wish for, in this specific case is collapsing the floating button while scrolling is happening, and returning to its original shape when the event stops.
@@ -97,7 +90,7 @@ function App() {
 }
 ```
 
-Now we also need to set the state to `false` once the event is no longer happening. Unfortunately there is no event that notifies about the completion of a scrolling event. But there exists a juicy workaround that is based on setting a timeout with `setTimeout()`:
+Now we also need to set the state to `false` once the event is no longer happening. Unfortunately, there is no event that notifies about the completion of a scrolling event. But there is a juicy workaround that is based on setting a timeout with `setTimeout()`:
 
 ``` ts
 const handleScroll: React.UIEventHandler<HTMLDivElement> = (_) => {
@@ -121,14 +114,17 @@ const handleScroll = (e: any) => {
 };
 ```
 
-![visual diagram](assets/diagram1.png)
 
-Experience react developers probably notice the error in the previous code fragment. The problem with saving the `timeoutId` in a variable, though, arises in situations such as actions that trigger **rerenders**.
+![Diagram setTimeout](assets/diagram1.png)
+
+Experienced react developers probably notice the error in the previous code fragment. The problem with saving the `timeoutId` in a variable arises in situations such as actions that trigger **rerenders**.
+
 If this were the case, this would mean that the timeout would not be cleared because its reference would have been lost (since the variable `timeoutId` is redeclared on each rerender)
 
-![visual diagram](assets/diagram3.png)
 
-The solution to that is to use the hook useRef() that "allows you to persist values between renders", "and it can be used to store a mutable value that does not cause a re-render when updated" (source: w3schools) <!-- todo: add link -->
+![clearTimeout not being called](assets/diagram3.png)
+
+The solution to that is to use the hook **useRef()** that "allows you to persist values between renders", "and it can be used to store a mutable value that does not cause a re-render when updated". _source: [w3schools](https://www.w3schools.com/react/react_useref.asp)_ 
 
 ```ts
 const timeoutId = useRef<NodeJS.Timeout>();
@@ -142,7 +138,7 @@ const handleScroll = (e: any) => {
 
 ## 4. Adding a style transition to the floating button
 
-Now, for a nice and smooth visual experience, you can add a subtle transition to the button so that it changes depending on the scrolling state.
+Now, for a nice and smooth visual experience, we added a subtle transition to the button so that it changes depending on the scrolling state
 
 ```tsx
 function App() {
@@ -188,6 +184,10 @@ button.isScrolling span {
 }
 ```
 
+![Floating button transition](assets/diagram2.png)
 
 
-![visual diagram](assets/diagram2.png)
+**Additional note:** _This article was co-authored by Denis Kruschinski_
+
+
+
