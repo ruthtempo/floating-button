@@ -31,6 +31,8 @@ p {
     background-color: silver;
 }
 
-div {
+.page  {
     height: 100vh;
+    overflow-y: scroll;
 }
+body{overflow-x: hidden; overflow-y: hidden;}

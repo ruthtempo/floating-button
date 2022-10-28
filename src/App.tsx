@@ -1,9 +1,9 @@
 import React, { useRef, useState } from "react";
 import "./App.css";
 
-const placeholders = new Array(99).fill(0).map((_, i) =>
-  <p key={i} style={{ width: `${Math.random() * 75}%` }} />
-)
+const placeholders = new Array(99)
+  .fill(0)
+  .map((_, i) => <p key={i} style={{ width: `${Math.random() * 75}%` }} />);
 
 function App() {
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
@@ -16,14 +16,12 @@ function App() {
   };
 
   return (
-    <div onScroll={handleScroll}>
+    <div onScroll={handleScroll} className="page">
       <h1>Collapsible Floating Action Button</h1>
       {placeholders}
       <button className={isScrolling ? "isScrolling" : ""}>
         <strong>A</strong>
-        <span>
-          ction
-        </span>
+        <span>ction</span>
       </button>
     </div>
   );
